@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار التشريح العملي</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary-color: #2c7873;
+  --secondary-color: #6fb3b8;
+  --accent-color: #ff9a3c;
+  --light-color: #f7f9f9;
+  --dark-color: #1a2c3a;
+  --correct-color: #4caf50;
+  --wrong-color: #f44336;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: var(--dark-color);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* رأس الصفحة */
+.header {
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 25px;
+  text-align: center;
+  position: relative;
+}
+
+.header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.header i {
+  margin-left: 10px;
+  color: var(--accent-color);
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.student-info {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.student-info input {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  width: 80%;
+  max-width: 400px;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* منطقة الأسئلة */
+.quiz-area {
+  padding: 25px;
+}
+
+.counter {
+  background-color: var(--light-color);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  border: 2px solid #e0e6ed;
+}
+
+.question-container {
+  background: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e8eef4;
+  margin-bottom: 25px;
+}
+
+.question-image {
+  width: 100%;
+  border-radius: 12px;
+  border: 3px solid var(--secondary-color);
+  margin-bottom: 25px;
+  max-height: 400px;
+  object-fit: contain;
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+
+.answer-options {
+  list-style-type: none;
+}
+
+.answer-options li {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.answer-options li:hover {
+  background-color: #edf2f7;
+  transform: translateY(-2px);
+}
+
+.answer-options select {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e0;
+  background-color: white;
+  font-size: 1.1rem;
+  color: var(--dark-color);
+  width: 250px; /* زاد حجم حقل الاختيار */
+  text-align: right;
+  margin-left: 15px;
+  transition: border-color 0.3s;
+}
+
+.answer-options select:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(111, 179, 184, 0.2);
+}
+
+.answer-label {
+  font-weight: bold;
+  color: var(--primary-color);
+  width: 120px;
+  font-size: 1.1rem;
+}
+
+/* شريط تنقل الأسئلة */
+.question-nav-bar {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e6ed;
+}
+
+.question-nav-title {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  font-weight: bold;
+  text-align: center;
+}
+
+.question-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.question-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #6fb3b8;
+  background: white;
+  color: #2c7873;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.question-btn:hover {
+  background: #e6f7f8;
+  transform: scale(1.1);
+}
+
+.question-btn.active {
+  background: #2c7873;
+  color: white;
+  border-color: #2c7873;
+}
+
+.question-btn.answered {
+  background: #c3e6cb;
+  color: #155724;
+  border-color: #155724;
+}
+
+/* أزرار التنقل */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-prev {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-next {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-submit {
+  background-color: var(--accent-color);
+  color: white;
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  font-size: 1.2rem;
+}
+
+.btn-retake {
+  background-color: var(--secondary-color);
+  color: white;
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  font-size: 1.2rem;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* نتيجة الاختبار */
+.result-container {
+  display: none;
+  text-align: center;
+  padding: 40px 25px;
+  background-color: #f8fafc;
+  border-radius: 15px;
+  margin-top: 20px;
+  border: 2px dashed var(--primary-color);
+}
+
+.result-container h2 {
+  color: var(--primary-color);
+  margin-bottom: 25px;
+  font-size: 2rem;
+}
+
+.score {
+  font-size: 4.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin: 20px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.score-details {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 25px auto;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.score-details p {
+  margin: 12px 0;
+  font-size: 1.2rem;
+  padding: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.bot-message {
+  background-color: #e3f2fd;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 25px;
+  border-right: 5px solid var(--secondary-color);
+  color: #1565c0;
+  text-align: right;
+}
+
+.bot-message p {
+  margin: 10px 0;
+}
+
+.performance-indicator {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.performance-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.performance-excellent {
+  background: linear-gradient(135deg, #4caf50, #8bc34a);
+  color: white;
+}
+
+.performance-good {
+  background: linear-gradient(135deg, #ff9800, #ffc107);
+  color: white;
+}
+
+.performance-average {
+  background: linear-gradient(135deg, #ff5722, #ff9800);
+  color: white;
+}
+
+.performance-poor {
+  background: linear-gradient(135deg, #f44336, #ff5722);
+  color: white;
+}
+
+/* تذييل الصفحة */
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+  background-color: #f1f5f9;
+  margin-top: 30px;
+}
+
+/* تأثيرات للجوال */
+@media (max-width: 768px) {
+  .container {
+    border-radius: 15px;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .question-container {
+    padding: 20px;
+  }
+  
+  .answer-options li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .answer-options select {
+    width: 100%;
+    margin-left: 0;
+    padding: 15px;
+    font-size: 1rem;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+  
+  .performance-circle {
+    width: 120px;
+    height: 120px;
+    font-size: 1.2rem;
+  }
+  
+  .question-buttons {
+    gap: 5px;
+  }
+  
+  .question-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+}
+
+/* رسائل التحميل */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  color: var(--primary-color);
+}
+
+.loading i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- رأس الصفحة -->
+  <div class="header">
+    <h1><i class="fas fa-brain"></i> اختبار التشريح العملي</h1>
+    <p>اختبار معرفتك بالأجزاء التشريحية للجسم البشري</p>
+    
+    <div class="student-info">
+      <label for="studentName">اسم الطالب:</label>
+      <input type="text" id="studentName" placeholder="أدخل اسمك الكامل">
+    </div>
+  </div>
+  
+  <!-- منطقة الاختبار -->
+  <div class="quiz-area" id="quizArea">
+    <!-- شريط تنقل الأسئلة -->
+    <div class="question-nav-bar" id="questionNavBar">
+      <div class="question-nav-title">القفز إلى سؤال:</div>
+      <div class="question-buttons" id="questionButtons"></div>
+    </div>
+    
+    <div class="counter" id="counter">سؤال 1 من 27</div>
+    
+    <!-- الأسئلة -->
+    <div class="question-container" id="question1">
+      <img src="images/1.jpg" alt="السؤال الاول" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromial facet</option>
+            <option value="B">Sternal end</option>
+            <option value="C">Subclavian groove</option>
+            <option value="D">Costal tuberosity</option>
+            <option value="E">Conoid tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromial facet</option>
+            <option value="B">Sternal end</option>
+            <option value="C">Subclavian groove</option>
+            <option value="D">Costal tuberosity</option>
+            <option value="E">Conoid tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromial facet</option>
+            <option value="B">Sternal end</option>
+            <option value="C">Subclavian groove</option>
+            <option value="D">Costal tuberosity</option>
+            <option value="E">Conoid tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromial facet</option>
+            <option value="B">Sternal end</option>
+            <option value="C">Subclavian groove</option>
+            <option value="D">Costal tuberosity</option>
+            <option value="E">Conoid tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromial facet</option>
+            <option value="B">Sternal end</option>
+            <option value="C">Subclavian groove</option>
+            <option value="D">Costal tuberosity</option>
+            <option value="E">Conoid tubercle</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- استمر في إضافة الأسئلة من 2 إلى 27 هنا -->
+    <!-- سأقوم بإضافة قالب للأسئلة الباقية -->
+  
+    <!-- أسئلة أخرى مخفية -->
+    <div class="question-container" id="question2" style="display:none;">
+      <img src="images/2.jpg" alt="السؤال الثاني" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">shaft</option>
+            <option value="B">Acromial end</option>
+            <option value="C">Conoid tubercle</option>
+            <option value="D">Sternal end</option>
+            <option value="E">Strnal facet</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">shaft</option>
+            <option value="B">Acromial end</option>
+            <option value="C">Conoid tubercle</option>
+            <option value="D">Sternal end</option>
+            <option value="E">Strnal facet</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">shaft</option>
+            <option value="B">Acromial end</option>
+            <option value="C">Conoid tubercle</option>
+            <option value="D">Sternal end</option>
+            <option value="E">Strnal facet</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">shaft</option>
+            <option value="B">Acromial end</option>
+            <option value="C">Conoid tubercle</option>
+            <option value="D">Sternal end</option>
+            <option value="E">Strnal facet</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">shaft</option>
+            <option value="B">Acromial end</option>
+            <option value="C">Conoid tubercle</option>
+            <option value="D">Sternal end</option>
+            <option value="E">Strnal facet</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- السؤال الثالث -->
+    <div class="question-container" id="question3" style="display:none;">
+      <img src="images/3.jpg" alt="تشريح العضلات" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coronoid process</option>
+            <option value="B">Lateral view of ulna</option>
+            <option value="C">Olecranon process</option>
+            <option value="D">Radial notch</option>
+            <option value="E">Trochlear fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coronoid process</option>
+            <option value="B">Lateral view of ulna</option>
+            <option value="C">Olecranon process</option>
+            <option value="D">Radial notch</option>
+            <option value="E">Trochlear fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coronoid process</option>
+            <option value="B">Lateral view of ulna</option>
+            <option value="C">Olecranon process</option>
+            <option value="D">Radial notch</option>
+            <option value="E">Trochlear fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coronoid process</option>
+            <option value="B">Lateral view of ulna</option>
+            <option value="C">Olecranon process</option>
+            <option value="D">Radial notch</option>
+            <option value="E">Trochlear fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coronoid process</option>
+            <option value="B">Lateral view of ulna</option>
+            <option value="C">Olecranon process</option>
+            <option value="D">Radial notch</option>
+            <option value="E">Trochlear fossa</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- السؤال الرابع -->
+    <div class="question-container" id="question4" style="display:none;">
+      <img src="images/4.jpg" alt="تشريح الدماغ" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of ulna</option>
+            <option value="B">Coronoid process</option>
+            <option value="C">Interosseous border</option>
+            <option value="D">Medial styloid</option>
+            <option value="E">Ulna tuberosity</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of ulna</option>
+            <option value="B">Coronoid process</option>
+            <option value="C">Interosseous border</option>
+            <option value="D">Medial styloid</option>
+            <option value="E">Ulna tuberosity</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of ulna</option>
+            <option value="B">Coronoid process</option>
+            <option value="C">Interosseous border</option>
+            <option value="D">Medial styloid</option>
+            <option value="E">Ulna tuberosity</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of ulna</option>
+            <option value="B">Coronoid process</option>
+            <option value="C">Interosseous border</option>
+            <option value="D">Medial styloid</option>
+            <option value="E">Ulna tuberosity</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of ulna</option>
+            <option value="B">Coronoid process</option>
+            <option value="C">Interosseous border</option>
+            <option value="D">Medial styloid</option>
+            <option value="E">Ulna tuberosity</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- السؤال الخامس -->
+    <div class="question-container" id="question5" style="display:none;">
+      <img src="images/5.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of humerus</option>
+            <option value="B">Deltoid tuberosity</option>
+            <option value="C">Posterior view of humerus</option>
+            <option value="D">Radial groove</option>
+            <option value="E">Shaft of humerus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of humerus</option>
+            <option value="B">Deltoid tuberosity</option>
+            <option value="C">Posterior view of humerus</option>
+            <option value="D">Radial groove</option>
+            <option value="E">Shaft of humerus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of humerus</option>
+            <option value="B">Deltoid tuberosity</option>
+            <option value="C">Posterior view of humerus</option>
+            <option value="D">Radial groove</option>
+            <option value="E">Shaft of humerus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of humerus</option>
+            <option value="B">Deltoid tuberosity</option>
+            <option value="C">Posterior view of humerus</option>
+            <option value="D">Radial groove</option>
+            <option value="E">Shaft of humerus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view of humerus</option>
+            <option value="B">Deltoid tuberosity</option>
+            <option value="C">Posterior view of humerus</option>
+            <option value="D">Radial groove</option>
+            <option value="E">Shaft of humerus</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question6" style="display:none;">
+      <img src="images/6.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view</option>
+            <option value="B">Posterior tubercle</option>
+            <option value="C">Neck</option>
+            <option value="D">Ulnar notch</option>
+            <option value="E">Shaft</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view</option>
+            <option value="B">Posterior tubercle</option>
+            <option value="C">Neck</option>
+            <option value="D">Ulnar notch</option>
+            <option value="E">Shaft</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view</option>
+            <option value="B">Posterior tubercle</option>
+            <option value="C">Neck</option>
+            <option value="D">Ulnar notch</option>
+            <option value="E">Shaft</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view</option>
+            <option value="B">Posterior tubercle</option>
+            <option value="C">Neck</option>
+            <option value="D">Ulnar notch</option>
+            <option value="E">Shaft</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view</option>
+            <option value="B">Posterior tubercle</option>
+            <option value="C">Neck</option>
+            <option value="D">Ulnar notch</option>
+            <option value="E">Shaft</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question7" style="display:none;">
+      <img src="images/7.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Humerus</option>
+            <option value="C">Radius</option>
+            <option value="D">Scapula</option>
+            <option value="E">Ulna</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Humerus</option>
+            <option value="C">Radius</option>
+            <option value="D">Scapula</option>
+            <option value="E">Ulna</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Humerus</option>
+            <option value="C">Radius</option>
+            <option value="D">Scapula</option>
+            <option value="E">Ulna</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Humerus</option>
+            <option value="C">Radius</option>
+            <option value="D">Scapula</option>
+            <option value="E">Ulna</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Humerus</option>
+            <option value="C">Radius</option>
+            <option value="D">Scapula</option>
+            <option value="E">Ulna</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question8" style="display:none;">
+      <img src="images/8.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Base of 3rd metacarpal bone</option>
+            <option value="B">Distal Interphalangeal joint little finger</option>
+            <option value="C">Head of 4th metacarpalbone</option>
+            <option value="D">Proximalinterphalangeal joint index finger</option>
+            <option value="E">Shaft of 1st metacarpalbone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Base of 3rd metacarpal bone</option>
+            <option value="B">Distal Interphalangeal joint little finger</option>
+            <option value="C">Head of 4th metacarpalbone</option>
+            <option value="D">Proximalinterphalangeal joint index finger</option>
+            <option value="E">Shaft of 1st metacarpalbone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Base of 3rd metacarpal bone</option>
+            <option value="B">Distal Interphalangeal joint little finger</option>
+            <option value="C">Head of 4th metacarpalbone</option>
+            <option value="D">Proximalinterphalangeal joint index finger</option>
+            <option value="E">Shaft of 1st metacarpalbone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Base of 3rd metacarpal bone</option>
+            <option value="B">Distal Interphalangeal joint little finger</option>
+            <option value="C">Head of 4th metacarpalbone</option>
+            <option value="D">Proximalinterphalangeal joint index finger</option>
+            <option value="E">Shaft of 1st metacarpalbone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Base of 3rd metacarpal bone</option>
+            <option value="B">Distal Interphalangeal joint little finger</option>
+            <option value="C">Head of 4th metacarpalbone</option>
+            <option value="D">Proximalinterphalangeal joint index finger</option>
+            <option value="E">Shaft of 1st metacarpalbone</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question9" style="display:none;">
+      <img src="images/9.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Head</option>
+            <option value="B">Posterior view</option>
+            <option value="C">Medial border</option>
+            <option value="D">Radial tuberosity</option>
+            <option value="E">Styloid process</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Head</option>
+            <option value="B">Posterior view</option>
+            <option value="C">Medial border</option>
+            <option value="D">Radial tuberosity</option>
+            <option value="E">Styloid process</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Head</option>
+            <option value="B">Posterior view</option>
+            <option value="C">Medial border</option>
+            <option value="D">Radial tuberosity</option>
+            <option value="E">Styloid process</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Head</option>
+            <option value="B">Posterior view</option>
+            <option value="C">Medial border</option>
+            <option value="D">Radial tuberosity</option>
+            <option value="E">Styloid process</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Head</option>
+            <option value="B">Posterior view</option>
+            <option value="C">Medial border</option>
+            <option value="D">Radial tuberosity</option>
+            <option value="E">Styloid process</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question10" style="display:none;">
+      <img src="images/10.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitulum</option>
+            <option value="B">Lateral epicondyle</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Olecranon fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitulum</option>
+            <option value="B">Lateral epicondyle</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Olecranon fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitulum</option>
+            <option value="B">Lateral epicondyle</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Olecranon fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitulum</option>
+            <option value="B">Lateral epicondyle</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Olecranon fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitulum</option>
+            <option value="B">Lateral epicondyle</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Olecranon fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question11" style="display:none;">
+      <img src="images/11.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">A carpal bone</option>
+            <option value="B">A metacarpal bone</option>
+            <option value="C">A phalanges bone</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">A carpal bone</option>
+            <option value="B">A metacarpal bone</option>
+            <option value="C">A phalanges bone</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">A carpal bone</option>
+            <option value="B">A metacarpal bone</option>
+            <option value="C">A phalanges bone</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">A carpal bone</option>
+            <option value="B">A metacarpal bone</option>
+            <option value="C">A phalanges bone</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">A carpal bone</option>
+            <option value="B">A metacarpal bone</option>
+            <option value="C">A phalanges bone</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question12" style="display:none;">
+      <img src="images/12.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Distal phalanges of middle finger</option>
+            <option value="B">Distal phalanges of thumb</option>
+            <option value="C">Middle phalanges of ring finger</option>
+            <option value="D">Proximal phalanges of little finger</option>
+            <option value="E">Proximal phalanges of thumb</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Distal phalanges of middle finger</option>
+            <option value="B">Distal phalanges of thumb</option>
+            <option value="C">Middle phalanges of ring finger</option>
+            <option value="D">Proximal phalanges of little finger</option>
+            <option value="E">Proximal phalanges of thumb</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Distal phalanges of middle finger</option>
+            <option value="B">Distal phalanges of thumb</option>
+            <option value="C">Middle phalanges of ring finger</option>
+            <option value="D">Proximal phalanges of little finger</option>
+            <option value="E">Proximal phalanges of thumb</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Distal phalanges of middle finger</option>
+            <option value="B">Distal phalanges of thumb</option>
+            <option value="C">Middle phalanges of ring finger</option>
+            <option value="D">Proximal phalanges of little finger</option>
+            <option value="E">Proximal phalanges of thumb</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Distal phalanges of middle finger</option>
+            <option value="B">Distal phalanges of thumb</option>
+            <option value="C">Middle phalanges of ring finger</option>
+            <option value="D">Proximal phalanges of little finger</option>
+            <option value="E">Proximal phalanges of thumb</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question13" style="display:none;">
+      <img src="images/13.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Inferior angle</option>
+            <option value="B">Infraglenoid tubercle</option>
+            <option value="C">Lateral border</option>
+            <option value="D">Superior angle</option>
+            <option value="E">Suprascapular notch</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Inferior angle</option>
+            <option value="B">Infraglenoid tubercle</option>
+            <option value="C">Lateral border</option>
+            <option value="D">Superior angle</option>
+            <option value="E">Suprascapular notch</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Inferior angle</option>
+            <option value="B">Infraglenoid tubercle</option>
+            <option value="C">Lateral border</option>
+            <option value="D">Superior angle</option>
+            <option value="E">Suprascapular notch</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Inferior angle</option>
+            <option value="B">Infraglenoid tubercle</option>
+            <option value="C">Lateral border</option>
+            <option value="D">Superior angle</option>
+            <option value="E">Suprascapular notch</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Inferior angle</option>
+            <option value="B">Infraglenoid tubercle</option>
+            <option value="C">Lateral border</option>
+            <option value="D">Superior angle</option>
+            <option value="E">Suprascapular notch</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question14" style="display:none;">
+      <img src="images/14.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpometacarpal joint</option>
+            <option value="B">Intercarpal joint</option>
+            <option value="C">Metacarpophalangeal joint</option>
+            <option value="D">Proximal interphalangeal joint</option>
+            <option value="E">Wrist joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpometacarpal joint</option>
+            <option value="B">Intercarpal joint</option>
+            <option value="C">Metacarpophalangeal joint</option>
+            <option value="D">Proximal interphalangeal joint</option>
+            <option value="E">Wrist joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpometacarpal joint</option>
+            <option value="B">Intercarpal joint</option>
+            <option value="C">Metacarpophalangeal joint</option>
+            <option value="D">Proximal interphalangeal joint</option>
+            <option value="E">Wrist joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpometacarpal joint</option>
+            <option value="B">Intercarpal joint</option>
+            <option value="C">Metacarpophalangeal joint</option>
+            <option value="D">Proximal interphalangeal joint</option>
+            <option value="E">Wrist joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpometacarpal joint</option>
+            <option value="B">Intercarpal joint</option>
+            <option value="C">Metacarpophalangeal joint</option>
+            <option value="D">Proximal interphalangeal joint</option>
+            <option value="E">Wrist joint</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question15" style="display:none;">
+      <img src="images/15.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Clavicle</option>
+            <option value="B">Nipple</option>
+            <option value="C">Sternal notch</option>
+            <option value="D">Sternocleidomastoid muscle</option>
+            <option value="E">Umbilicus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Clavicle</option>
+            <option value="B">Nipple</option>
+            <option value="C">Sternal notch</option>
+            <option value="D">Sternocleidomastoid muscle</option>
+            <option value="E">Umbilicus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Clavicle</option>
+            <option value="B">Nipple</option>
+            <option value="C">Sternal notch</option>
+            <option value="D">Sternocleidomastoid muscle</option>
+            <option value="E">Umbilicus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Clavicle</option>
+            <option value="B">Nipple</option>
+            <option value="C">Sternal notch</option>
+            <option value="D">Sternocleidomastoid muscle</option>
+            <option value="E">Umbilicus</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Clavicle</option>
+            <option value="B">Nipple</option>
+            <option value="C">Sternal notch</option>
+            <option value="D">Sternocleidomastoid muscle</option>
+            <option value="E">Umbilicus</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question16" style="display:none;">
+      <img src="images/16.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Glenohumeral joint</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">T2 level</option>
+            <option value="E">T7 level</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Glenohumeral joint</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">T2 level</option>
+            <option value="E">T7 level</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Glenohumeral joint</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">T2 level</option>
+            <option value="E">T7 level</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Glenohumeral joint</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">T2 level</option>
+            <option value="E">T7 level</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Glenohumeral joint</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">T2 level</option>
+            <option value="E">T7 level</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question17" style="display:none;">
+      <img src="images/17.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Greater tubercle of humerus</option>
+            <option value="C">Left clavicle</option>
+            <option value="D">Sternal angle</option>
+            <option value="E">Sternoclavicular joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Greater tubercle of humerus</option>
+            <option value="C">Left clavicle</option>
+            <option value="D">Sternal angle</option>
+            <option value="E">Sternoclavicular joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Greater tubercle of humerus</option>
+            <option value="C">Left clavicle</option>
+            <option value="D">Sternal angle</option>
+            <option value="E">Sternoclavicular joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Greater tubercle of humerus</option>
+            <option value="C">Left clavicle</option>
+            <option value="D">Sternal angle</option>
+            <option value="E">Sternoclavicular joint</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Greater tubercle of humerus</option>
+            <option value="C">Left clavicle</option>
+            <option value="D">Sternal angle</option>
+            <option value="E">Sternoclavicular joint</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question18" style="display:none;">
+      <img src="images/18.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior compartment arm muscles</option>
+            <option value="B">Anterior compartment forearm muscles</option>
+            <option value="C">Hand muscles</option>
+            <option value="D">Shoulder girdle muscles</option>
+            <option value="E">Thiner muscle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior compartment arm muscles</option>
+            <option value="B">Anterior compartment forearm muscles</option>
+            <option value="C">Hand muscles</option>
+            <option value="D">Shoulder girdle muscles</option>
+            <option value="E">Thiner muscle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior compartment arm muscles</option>
+            <option value="B">Anterior compartment forearm muscles</option>
+            <option value="C">Hand muscles</option>
+            <option value="D">Shoulder girdle muscles</option>
+            <option value="E">Thiner muscle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior compartment arm muscles</option>
+            <option value="B">Anterior compartment forearm muscles</option>
+            <option value="C">Hand muscles</option>
+            <option value="D">Shoulder girdle muscles</option>
+            <option value="E">Thiner muscle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior compartment arm muscles</option>
+            <option value="B">Anterior compartment forearm muscles</option>
+            <option value="C">Hand muscles</option>
+            <option value="D">Shoulder girdle muscles</option>
+            <option value="E">Thiner muscle</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question19" style="display:none;">
+      <img src="images/19.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coracoid process</option>
+            <option value="B">Glenoid cavity</option>
+            <option value="C">Medial border</option>
+            <option value="D">Subscapular fossa</option>
+            <option value="E">Superior border</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coracoid process</option>
+            <option value="B">Glenoid cavity</option>
+            <option value="C">Medial border</option>
+            <option value="D">Subscapular fossa</option>
+            <option value="E">Superior border</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coracoid process</option>
+            <option value="B">Glenoid cavity</option>
+            <option value="C">Medial border</option>
+            <option value="D">Subscapular fossa</option>
+            <option value="E">Superior border</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coracoid process</option>
+            <option value="B">Glenoid cavity</option>
+            <option value="C">Medial border</option>
+            <option value="D">Subscapular fossa</option>
+            <option value="E">Superior border</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Coracoid process</option>
+            <option value="B">Glenoid cavity</option>
+            <option value="C">Medial border</option>
+            <option value="D">Subscapular fossa</option>
+            <option value="E">Superior border</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question20" style="display:none;">
+      <img src="images/20.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">capitulum</option>
+            <option value="B">Coronoid fossa</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Radial fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">capitulum</option>
+            <option value="B">Coronoid fossa</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Radial fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">capitulum</option>
+            <option value="B">Coronoid fossa</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Radial fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">capitulum</option>
+            <option value="B">Coronoid fossa</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Radial fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">capitulum</option>
+            <option value="B">Coronoid fossa</option>
+            <option value="C">Medial epicondyle</option>
+            <option value="D">Radial fossa</option>
+            <option value="E">Trochlea</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question21" style="display:none;">
+      <img src="images/21.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Coracoid process</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">Supraspinous fossa</option>
+            <option value="E">Infraspinous fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Coracoid process</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">Supraspinous fossa</option>
+            <option value="E">Infraspinous fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Coracoid process</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">Supraspinous fossa</option>
+            <option value="E">Infraspinous fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Coracoid process</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">Supraspinous fossa</option>
+            <option value="E">Infraspinous fossa</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Acromion process</option>
+            <option value="B">Coracoid process</option>
+            <option value="C">Scapular spine</option>
+            <option value="D">Supraspinous fossa</option>
+            <option value="E">Infraspinous fossa</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question22" style="display:none;">
+      <img src="images/22.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Metacarpal bones</option>
+            <option value="C">Phalanges</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Metacarpal bones</option>
+            <option value="C">Phalanges</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Metacarpal bones</option>
+            <option value="C">Phalanges</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Metacarpal bones</option>
+            <option value="C">Phalanges</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Carpal bones</option>
+            <option value="B">Metacarpal bones</option>
+            <option value="C">Phalanges</option>
+            <option value="D">Radius bone</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question23" style="display:none;">
+      <img src="images/23.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Fifth metacarpal bone</option>
+            <option value="B">First metacarpal bone</option>
+            <option value="C">Fourth metacarpal bone</option>
+            <option value="D">Second metacarpal bone</option>
+            <option value="E">Third metacarpal bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Fifth metacarpal bone</option>
+            <option value="B">First metacarpal bone</option>
+            <option value="C">Fourth metacarpal bone</option>
+            <option value="D">Second metacarpal bone</option>
+            <option value="E">Third metacarpal bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Fifth metacarpal bone</option>
+            <option value="B">First metacarpal bone</option>
+            <option value="C">Fourth metacarpal bone</option>
+            <option value="D">Second metacarpal bone</option>
+            <option value="E">Third metacarpal bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Fifth metacarpal bone</option>
+            <option value="B">First metacarpal bone</option>
+            <option value="C">Fourth metacarpal bone</option>
+            <option value="D">Second metacarpal bone</option>
+            <option value="E">Third metacarpal bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Fifth metacarpal bone</option>
+            <option value="B">First metacarpal bone</option>
+            <option value="C">Fourth metacarpal bone</option>
+            <option value="D">Second metacarpal bone</option>
+            <option value="E">Third metacarpal bone</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question24" style="display:none;">
+      <img src="images/24.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitate</option>
+            <option value="B">Hamate</option>
+            <option value="C">Trapezium</option>
+            <option value="D">Trapezoid</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitate</option>
+            <option value="B">Hamate</option>
+            <option value="C">Trapezium</option>
+            <option value="D">Trapezoid</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitate</option>
+            <option value="B">Hamate</option>
+            <option value="C">Trapezium</option>
+            <option value="D">Trapezoid</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitate</option>
+            <option value="B">Hamate</option>
+            <option value="C">Trapezium</option>
+            <option value="D">Trapezoid</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Capitate</option>
+            <option value="B">Hamate</option>
+            <option value="C">Trapezium</option>
+            <option value="D">Trapezoid</option>
+            <option value="E">Ulna bone</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question25" style="display:none;">
+      <img src="images/25.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view – left scapula</option>
+            <option value="B">Anterior view – Right scapula</option>
+            <option value="C">Lateral view – Left scapula</option>
+            <option value="D">Posterior view – Left scapula</option>
+            <option value="E">Posterior view – Right scapula</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view – left scapula</option>
+            <option value="B">Anterior view – Right scapula</option>
+            <option value="C">Lateral view – Left scapula</option>
+            <option value="D">Posterior view – Left scapula</option>
+            <option value="E">Posterior view – Right scapula</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view – left scapula</option>
+            <option value="B">Anterior view – Right scapula</option>
+            <option value="C">Lateral view – Left scapula</option>
+            <option value="D">Posterior view – Left scapula</option>
+            <option value="E">Posterior view – Right scapula</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view – left scapula</option>
+            <option value="B">Anterior view – Right scapula</option>
+            <option value="C">Lateral view – Left scapula</option>
+            <option value="D">Posterior view – Left scapula</option>
+            <option value="E">Posterior view – Right scapula</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anterior view – left scapula</option>
+            <option value="B">Anterior view – Right scapula</option>
+            <option value="C">Lateral view – Left scapula</option>
+            <option value="D">Posterior view – Left scapula</option>
+            <option value="E">Posterior view – Right scapula</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question26" style="display:none;">
+      <img src="images/26.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anatomical neck</option>
+            <option value="B">Greater tubercle</option>
+            <option value="C">Head</option>
+            <option value="D">Intertubercle groove</option>
+            <option value="E">Lesser tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anatomical neck</option>
+            <option value="B">Greater tubercle</option>
+            <option value="C">Head</option>
+            <option value="D">Intertubercle groove</option>
+            <option value="E">Lesser tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anatomical neck</option>
+            <option value="B">Greater tubercle</option>
+            <option value="C">Head</option>
+            <option value="D">Intertubercle groove</option>
+            <option value="E">Lesser tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anatomical neck</option>
+            <option value="B">Greater tubercle</option>
+            <option value="C">Head</option>
+            <option value="D">Intertubercle groove</option>
+            <option value="E">Lesser tubercle</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Anatomical neck</option>
+            <option value="B">Greater tubercle</option>
+            <option value="C">Head</option>
+            <option value="D">Intertubercle groove</option>
+            <option value="E">Lesser tubercle</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+	
+	    <!-- السؤال الخامس -->
+    <div class="question-container" id="question27" style="display:none;">
+      <img src="images/27.jpg" alt="تشريح الهيكل العظمي" class="question-image">
+      <ul class="answer-options">
+        <li>
+          <span class="answer-label">Q1</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Lunate</option>
+            <option value="B">Pisiform</option>
+            <option value="C">Radius bone</option>
+            <option value="D">Scaphoid</option>
+            <option value="E">Triquetrum</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q2</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Lunate</option>
+            <option value="B">Pisiform</option>
+            <option value="C">Radius bone</option>
+            <option value="D">Scaphoid</option>
+            <option value="E">Triquetrum</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q3</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Lunate</option>
+            <option value="B">Pisiform</option>
+            <option value="C">Radius bone</option>
+            <option value="D">Scaphoid</option>
+            <option value="E">Triquetrum</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q4</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Lunate</option>
+            <option value="B">Pisiform</option>
+            <option value="C">Radius bone</option>
+            <option value="D">Scaphoid</option>
+            <option value="E">Triquetrum</option>
+          </select>
+        </li>
+        <li>
+          <span class="answer-label">Q5</span>
+          <select>
+            <option value="">اختر الإجابة</option>
+            <option value="A">Lunate</option>
+            <option value="B">Pisiform</option>
+            <option value="C">Radius bone</option>
+            <option value="D">Scaphoid</option>
+            <option value="E">Triquetrum</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- أضف المزيد من الأسئلة هنا بنفس الطريقة -->
+    <!-- من السؤال 3 إلى السؤال 27 -->
+    
+    <!-- رسالة التحميل -->
+    <div class="loading" id="loading">
+      <i class="fas fa-spinner"></i>
+      <p>جاري إرسال النتيجة...</p>
+    </div>
+    
+    <!-- أزرار التنقل -->
+    <div class="navigation-buttons">
+      <button class="btn btn-prev" id="prevBtn" onclick="prevQuestion()" disabled>
+        <i class="fas fa-arrow-right"></i> السابق
+      </button>
+      <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">
+        التالي <i class="fas fa-arrow-left"></i>
+      </button>
+    </div>
+    
+    <button class="btn btn-submit" id="submitBtn" onclick="submitQuiz()">
+      <i class=""></i> إنهاء الاختبار 
+    </button>
+  </div>
+  
+  <!-- نتيجة الاختبار -->
+  <div class="result-container" id="resultContainer">
+    <h2><i class="fas fa-award"></i> نتيجة الاختبار</h2>
+    
+    <div class="performance-indicator">
+      <div class="performance-circle" id="performanceCircle">
+        <span id="scorePercentage">0%</span>
+      </div>
+    </div>
+    
+    <div class="score-details">
+      <p id="studentNameResult"></p>
+      <p id="scoreText"></p>
+      <p id="correctAnswers"></p>
+      <p id="totalQuestions"></p>
+      <p id="percentage"></p>
+      <p id="performanceText"></p>
+    </div>
+    
+    <div class="bot-message">
+      <p><i class=""></i> <strong></strong></p>
+      <p id="botMessageText"></p>
+      <p id="botResponse"></p>
+    </div>
+    
+    <button class="btn btn-retake" onclick="retakeQuiz()">
+      <i class="fas fa-redo"></i> إعادة الاختبار
+    </button>
+  </div>
+  
+  <!-- تذييل الصفحة -->
+  <div class="footer">
+    <p>© 2026 قسم الاشعة -  | </p>
+    <p></p>
+  </div>
+</div>
+
+<script>
+// بيانات الأسئلة والإجابات الصحيحة - 27 سؤال × 5 إجابات لكل سؤال = 135 درجة
+const questions = [
+  { id: 1, correctAnswers: ["A", "E", "D", "B", "C"] },
+  { id: 2, correctAnswers: ["B", "A", "E", "D", "C"] },
+  { id: 3, correctAnswers: ["C", "D", "A", "E", "B"] },
+  { id: 4, correctAnswers: ["B", "C", "D", "E", "A"] },
+  { id: 5, correctAnswers: ["B", "A", "E", "C", "D"] },
+  { id: 6, correctAnswers: ["A", "D", "E", "C", "B"] },
+  { id: 7, correctAnswers: ["B", "D", "C", "E", "A"] },
+  { id: 8, correctAnswers: ["D", "E", "A", "C", "B"] },
+  { id: 9, correctAnswers: ["A", "D", "C", "E", "B"] },
+  { id: 10, correctAnswers: ["D", "C", "E", "A", "B"] },
+  { id: 11, correctAnswers: ["C", "B", "A", "D", "E"] },
+  { id: 12, correctAnswers: ["B", "E", "D", "C", "A"] },
+  { id: 13, correctAnswers: ["D", "A", "C", "B", "E"] },
+  { id: 14, correctAnswers: ["D", "B", "E", "A", "C"] },
+  { id: 15, correctAnswers: ["D", "A", "E", "B", "C"] },
+  { id: 16, correctAnswers: ["C", "A", "B", "E", "D"] },
+  { id: 17, correctAnswers: ["E", "A", "B", "D", "C"] },
+  { id: 18, correctAnswers: ["A", "B", "C", "E", "D"] },
+  { id: 19, correctAnswers: ["A", "B", "D", "C", "E"] },
+  { id: 20, correctAnswers: ["D", "A", "E", "C", "B"] },
+  { id: 21, correctAnswers: ["B", "D", "C", "E", "A"] },
+  { id: 22, correctAnswers: ["C", "A", "D", "E", "B"] },
+  { id: 23, correctAnswers: ["B", "D", "E", "C", "A"] },
+  { id: 24, correctAnswers: ["B", "A", "E", "D", "C"] },
+  { id: 25, correctAnswers: ["E", "A", "B", "C", "D"] },
+  { id: 26, correctAnswers: ["A", "B", "D", "C", "E"] },
+  { id: 27, correctAnswers: ["B", "E", "A", "C", "D"] }
+];
+
+// المتغيرات العامة
+let currentQuestion = 1;
+const totalQuestions = questions.length;
+const totalAnswers = totalQuestions ; // 27 سؤال × 5 إجابات = 135
+let userAnswers = {};
+let quizSubmitted = false;
+
+// تهيئة شريط تنقل الأسئلة
+function initializeQuestionNav() {
+  const questionButtons = document.getElementById('questionButtons');
+  questionButtons.innerHTML = '';
+  
+  for (let i = 1; i <= totalQuestions; i++) {
+    const button = document.createElement('button');
+    button.className = 'question-btn';
+    button.textContent = i;
+    button.dataset.question = i;
+    
+    button.addEventListener('click', function() {
+      goToQuestion(parseInt(this.dataset.question));
+    });
+    
+    questionButtons.appendChild(button);
+  }
+  
+  updateQuestionNav();
+}
+
+// تحديث شريط تنقل الأسئلة
+function updateQuestionNav() {
+  const buttons = document.querySelectorAll('.question-btn');
+  buttons.forEach(button => {
+    const questionNum = parseInt(button.dataset.question);
+    button.classList.remove('active', 'answered');
+    
+    if (questionNum === currentQuestion) {
+      button.classList.add('active');
+    }
+    
+    // تحقق إذا كان السؤال قد تمت الإجابة عليه
+    if (userAnswers[questionNum]) {
+      const answeredCount = userAnswers[questionNum].filter(answer => answer && answer !== '').length;
+      if (answeredCount > 0) {
+        button.classList.add('answered');
+      }
+    }
+  });
+}
+
+// الانتقال إلى سؤال محدد
+function goToQuestion(questionNum) {
+  if (questionNum >= 1 && questionNum <= totalQuestions) {
+    currentQuestion = questionNum;
+    showQuestion(currentQuestion);
+    updateQuestionNav();
+  }
+}
+
+// عرض السؤال الحالي
+function showQuestion(questionNum) {
+  // إخفاء كل الأسئلة
+  for (let i = 1; i <= totalQuestions; i++) {
+    const questionElement = document.getElementById(`question${i}`);
+    if (questionElement) {
+      questionElement.style.display = "none";
+    }
+  }
+  
+  // عرض السؤال المطلوب
+  const currentQuestionElement = document.getElementById(`question${questionNum}`);
+  if (currentQuestionElement) {
+    currentQuestionElement.style.display = "block";
+  }
+  
+  // تحديث العداد
+  document.getElementById("counter").textContent = `سؤال ${questionNum} من ${totalQuestions}`;
+  
+  // تحديث حالة أزرار التنقل
+  document.getElementById("prevBtn").disabled = (questionNum === 1);
+  document.getElementById("nextBtn").disabled = (questionNum === totalQuestions);
+  
+  // استعادة الإجابات المحفوظة
+  restoreAnswers(questionNum);
+}
+
+// حفظ إجابة المستخدم
+function saveAnswer(questionNum, answerIndex, value) {
+  if (!userAnswers[questionNum]) {
+    userAnswers[questionNum] = [];
+  }
+  userAnswers[questionNum][answerIndex] = value;
+  
+  // تحديث شريط التنقل
+  updateQuestionNav();
+}
+
+// استعادة الإجابات المحفوظة
+function restoreAnswers(questionNum) {
+  if (userAnswers[questionNum]) {
+    const questionElement = document.getElementById(`question${questionNum}`);
+    if (questionElement) {
+      const selects = questionElement.querySelectorAll('select');
+      
+      selects.forEach((select, index) => {
+        if (userAnswers[questionNum][index]) {
+          select.value = userAnswers[questionNum][index];
+        }
+      });
+    }
+  }
+}
+
+// الانتقال إلى السؤال التالي
+function nextQuestion() {
+  if (currentQuestion < totalQuestions) {
+    currentQuestion++;
+    showQuestion(currentQuestion);
+    updateQuestionNav();
+  }
+}
+
+// الانتقال إلى السؤال السابق
+function prevQuestion() {
+  if (currentQuestion > 1) {
+    currentQuestion--;
+    showQuestion(currentQuestion);
+    updateQuestionNav();
+  }
+}
+
+// حفظ جميع الإجابات
+function saveAllAnswers() {
+  for (let i = 1; i <= totalQuestions; i++) {
+    const questionElement = document.getElementById(`question${i}`);
+    if (questionElement) {
+      const selects = questionElement.querySelectorAll('select');
+      
+      selects.forEach((select, index) => {
+        saveAnswer(i, index, select.value);
+      });
+    }
+  }
+}
+
+// إرسال الاختبار
+async function submitQuiz() {
+  const studentName = document.getElementById("studentName").value.trim();
+  
+  if (!studentName) {
+    alert("الرجاء إدخال اسم الطالب قبل إنهاء الاختبار");
+    return;
+  }
+  
+  // حفظ جميع الإجابات قبل التصحيح
+  saveAllAnswers();
+  
+  // عرض رسالة التحميل
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("submitBtn").disabled = true;
+  
+  // حساب النتيجة
+  let correctCount = 0;
+  
+  // التحقق من كل سؤال
+  questions.forEach(question => {
+    if (userAnswers[question.id]) {
+      userAnswers[question.id].forEach((answer, index) => {
+        if (answer === question.correctAnswers[index]) {
+          correctCount++;
+        }
+      });
+    }
+  });
+  
+  // حساب النسبة المئوية
+  const percentage = Math.round((correctCount / totalAnswers) * 100);
+  
+  // إرسال النتيجة إلى البوت (محاكاة إرسال حقيقي)
+ 
+  
+  // إخفاء رسالة التحميل
+  document.getElementById("loading").style.display = "none";
+  
+  // عرض النتيجة
+  document.getElementById("quizArea").style.display = "none";
+  document.getElementById("resultContainer").style.display = "block";
+  
+  // تحديث معلومات النتيجة
+  document.getElementById("studentNameResult").textContent = `اسم الطالب: ${studentName}`;
+  document.getElementById("scoreText").textContent = `الدرجة: ${correctCount} من ${totalAnswers}`;
+  document.getElementById("correctAnswers").textContent = `عدد الإجابات الصحيحة: ${correctCount}`;
+  document.getElementById("totalQuestions").textContent = `إجمالي عدد الأسئلة: ${totalAnswers}`;
+  document.getElementById("percentage").textContent = `النسبة المئوية: ${percentage}%`;
+  document.getElementById("scorePercentage").textContent = `${percentage}%`;
+  
+  // عرض رد البوت
+  document.getElementById("botResponse").innerHTML = botResponse;
+  
+  // تحديد أداء الطالب
+  let performanceText = "";
+  let performanceClass = "";
+  
+  if (percentage >= 90) {
+    performanceText = "وحش انته !";
+    performanceClass = "performance-excellent";
+  } else if (percentage >= 75) {
+    performanceText = "اي عاشت ايدكً";
+    performanceClass = "performance-good";
+  } else if (percentage >= 60) {
+    performanceText = "يعني بالدفرات";
+    performanceClass = "performance-average";
+  } else {
+    performanceText = "روح كمل تسخيت احسلك";
+    performanceClass = "performance-poor";
+  }
+  
+  document.getElementById("performanceText").textContent = `التقييم: ${performanceText}`;
+  document.getElementById("performanceCircle").className = `performance-circle ${performanceClass}`;
+  
+  quizSubmitted = true;
+}
+
+
+// إعادة الاختبار
+function retakeQuiz() {
+  // إعادة تعيين المتغيرات
+  currentQuestion = 1;
+  userAnswers = {};
+  quizSubmitted = false;
+  
+  // إعادة تعيين كل الخيارات
+  for (let i = 1; i <= totalQuestions; i++) {
+    const questionElement = document.getElementById(`question${i}`);
+    if (questionElement) {
+      const selects = questionElement.querySelectorAll('select');
+      
+      selects.forEach(select => {
+        select.value = "";
+      });
+    }
+  }
+  
+  // إعادة تعيين اسم الطالب
+  document.getElementById("studentName").value = "";
+  
+  // إعادة عرض منطقة الاختبار
+  document.getElementById("quizArea").style.display = "block";
+  document.getElementById("resultContainer").style.display = "none";
+  document.getElementById("submitBtn").disabled = false;
+  
+  // إعادة تعيين العداد وشريط التنقل
+  showQuestion(1);
+  initializeQuestionNav();
+}
+
+// إضافة مستمعين للأحداث لحفظ الإجابات تلقائياً
+document.addEventListener('DOMContentLoaded', function() {
+  // إضافة مستمعات للأحداث على جميع عناصر select
+  for (let i = 1; i <= totalQuestions; i++) {
+    const questionElement = document.getElementById(`question${i}`);
+    if (questionElement) {
+      const selects = questionElement.querySelectorAll('select');
+      
+      selects.forEach((select, index) => {
+        select.addEventListener('change', function() {
+          saveAnswer(i, index, this.value);
+        });
+      });
+    }
+  }
+  
+  // تهيئة الاختبار
+  initializeQuestionNav();
+  showQuestion(1);
+  
+  // تحذير عند محاولة الخروج من الصفحة
+  window.addEventListener('beforeunload', function(e) {
+    if (!quizSubmitted) {
+      const confirmationMessage = 'هل تريد حقاً الخروج؟ ستتم فقدان إجاباتك.';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    }
+  });
+  
+  // تحقق من أن جميع الأسئلة موجودة
+  console.log(`تم تحميل ${totalQuestions} سؤالاً`);
+  console.log(`إجمالي الدرجات الممكنة: ${totalAnswers}`);
+});
+</script>
+</body>
+</html>
