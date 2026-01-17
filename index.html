@@ -151,7 +151,7 @@ body {
   background-color: white;
   font-size: 1.1rem;
   color: var(--dark-color);
-  width: 250px; /* زاد حجم حقل الاختيار */
+  width: 250px;
   text-align: right;
   margin-left: 15px;
   transition: border-color 0.3s;
@@ -457,6 +457,23 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* مؤشر التقدم */
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e6ed;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
 </style>
 </head>
 <body>
@@ -483,9 +500,14 @@ body {
     
     <div class="counter" id="counter">سؤال 1 من 27</div>
     
+    <!-- مؤشر التقدم -->
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 3.7%"></div>
+    </div>
+    
     <!-- الأسئلة -->
     <div class="question-container" id="question1">
-      <img src="images/1.jpg" alt="السؤال الاول" class="question-image">
+      <img src="images/1.jpg" alt="سؤال 1" class="question-image">
       <ul class="answer-options">
         <li>
           <span class="answer-label">Q1</span>
@@ -2180,7 +2202,7 @@ body {
     </div>
     
     <button class="btn btn-submit" id="submitBtn" onclick="submitQuiz()">
-      <i class=""></i> إنهاء الاختبار 
+      <i class=""></i> إنهاء الاختبار
     </button>
   </div>
   
@@ -2206,7 +2228,7 @@ body {
     <div class="bot-message">
       <p><i class=""></i> <strong></strong></p>
       <p id="botMessageText"></p>
-      <p id="botResponse"></p>
+      <div id="botResponse"></div>
     </div>
     
     <button class="btn btn-retake" onclick="retakeQuiz()">
@@ -2216,13 +2238,13 @@ body {
   
   <!-- تذييل الصفحة -->
   <div class="footer">
-    <p>© 2026 قسم الاشعة -  | </p>
+    <p>© 2026 قسم التشريح - | تم التصميم بواسطة الزركة</p>
     <p></p>
   </div>
 </div>
 
 <script>
-// بيانات الأسئلة والإجابات الصحيحة - 27 سؤال × 5 إجابات لكل سؤال = 135 درجة
+// بيانات الأسئلة والإجابات الصحيحة - 27 سؤال فقط (درجة واحدة لكل سؤال)
 const questions = [
   { id: 1, correctAnswers: ["A", "E", "D", "B", "C"] },
   { id: 2, correctAnswers: ["B", "A", "E", "D", "C"] },
@@ -2255,8 +2277,8 @@ const questions = [
 
 // المتغيرات العامة
 let currentQuestion = 1;
-const totalQuestions = questions.length;
-const totalAnswers = totalQuestions ; // 27 سؤال × 5 إجابات = 135
+const totalQuestions = questions.length; // 27 سؤال
+const maxScore = totalQuestions; // كل سؤال صحيح = درجة واحدة
 let userAnswers = {};
 let quizSubmitted = false;
 
@@ -2295,11 +2317,18 @@ function updateQuestionNav() {
     // تحقق إذا كان السؤال قد تمت الإجابة عليه
     if (userAnswers[questionNum]) {
       const answeredCount = userAnswers[questionNum].filter(answer => answer && answer !== '').length;
-      if (answeredCount > 0) {
+      if (answeredCount === 5) { // تمت الإجابة على جميع الأسئلة الخمسة
         button.classList.add('answered');
       }
     }
   });
+}
+
+// تحديث شريط التقدم
+function updateProgressBar() {
+  const progressFill = document.getElementById('progressFill');
+  const progressPercentage = (currentQuestion / totalQuestions) * 100;
+  progressFill.style.width = `${progressPercentage}%`;
 }
 
 // الانتقال إلى سؤال محدد
@@ -2308,6 +2337,7 @@ function goToQuestion(questionNum) {
     currentQuestion = questionNum;
     showQuestion(currentQuestion);
     updateQuestionNav();
+    updateProgressBar();
   }
 }
 
@@ -2333,6 +2363,9 @@ function showQuestion(questionNum) {
   // تحديث حالة أزرار التنقل
   document.getElementById("prevBtn").disabled = (questionNum === 1);
   document.getElementById("nextBtn").disabled = (questionNum === totalQuestions);
+  
+  // تحديث شريط التقدم
+  updateProgressBar();
   
   // استعادة الإجابات المحفوظة
   restoreAnswers(questionNum);
@@ -2397,6 +2430,24 @@ function saveAllAnswers() {
   }
 }
 
+// التحقق من إجابة سؤال واحد (يجب أن تكون جميع الإجابات الخمس صحيحة)
+function isQuestionCorrect(questionId) {
+  if (!userAnswers[questionId] || userAnswers[questionId].length !== 5) {
+    return false;
+  }
+  
+  const correctAnswers = questions[questionId - 1].correctAnswers;
+  
+  // التحقق من أن جميع الإجابات الخمسة صحيحة
+  for (let i = 0; i < 5; i++) {
+    if (userAnswers[questionId][i] !== correctAnswers[i]) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 // إرسال الاختبار
 async function submitQuiz() {
   const studentName = document.getElementById("studentName").value.trim();
@@ -2413,25 +2464,21 @@ async function submitQuiz() {
   document.getElementById("loading").style.display = "block";
   document.getElementById("submitBtn").disabled = true;
   
-  // حساب النتيجة
+  // حساب النتيجة (كل سؤال صحيح = درجة واحدة)
   let correctCount = 0;
   
   // التحقق من كل سؤال
-  questions.forEach(question => {
-    if (userAnswers[question.id]) {
-      userAnswers[question.id].forEach((answer, index) => {
-        if (answer === question.correctAnswers[index]) {
-          correctCount++;
-        }
-      });
+  for (let i = 1; i <= totalQuestions; i++) {
+    if (isQuestionCorrect(i)) {
+      correctCount++;
     }
-  });
+  }
   
   // حساب النسبة المئوية
-  const percentage = Math.round((correctCount / totalAnswers) * 100);
+  const percentage = Math.round((correctCount / maxScore) * 100);
   
-  // إرسال النتيجة إلى البوت (محاكاة إرسال حقيقي)
- 
+  // إرسال النتيجة إلى البوت
+
   
   // إخفاء رسالة التحميل
   document.getElementById("loading").style.display = "none";
@@ -2442,9 +2489,9 @@ async function submitQuiz() {
   
   // تحديث معلومات النتيجة
   document.getElementById("studentNameResult").textContent = `اسم الطالب: ${studentName}`;
-  document.getElementById("scoreText").textContent = `الدرجة: ${correctCount} من ${totalAnswers}`;
-  document.getElementById("correctAnswers").textContent = `عدد الإجابات الصحيحة: ${correctCount}`;
-  document.getElementById("totalQuestions").textContent = `إجمالي عدد الأسئلة: ${totalAnswers}`;
+  document.getElementById("scoreText").textContent = `الدرجة: ${correctCount} من ${maxScore}`;
+  document.getElementById("correctAnswers").textContent = `عدد الأسئلة الصحيحة: ${correctCount}`;
+  document.getElementById("totalQuestions").textContent = `إجمالي عدد الأسئلة: ${maxScore}`;
   document.getElementById("percentage").textContent = `النسبة المئوية: ${percentage}%`;
   document.getElementById("scorePercentage").textContent = `${percentage}%`;
   
@@ -2456,16 +2503,16 @@ async function submitQuiz() {
   let performanceClass = "";
   
   if (percentage >= 90) {
-    performanceText = "وحش انته !";
+    performanceText = "ممتاز!";
     performanceClass = "performance-excellent";
   } else if (percentage >= 75) {
-    performanceText = "اي عاشت ايدكً";
+    performanceText = "جيد جداً";
     performanceClass = "performance-good";
   } else if (percentage >= 60) {
-    performanceText = "يعني بالدفرات";
+    performanceText = "مقبول";
     performanceClass = "performance-average";
   } else {
-    performanceText = "روح كمل تسخيت احسلك";
+    performanceText = "تحتاج إلى تحسين";
     performanceClass = "performance-poor";
   }
   
@@ -2539,7 +2586,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // تحقق من أن جميع الأسئلة موجودة
   console.log(`تم تحميل ${totalQuestions} سؤالاً`);
-  console.log(`إجمالي الدرجات الممكنة: ${totalAnswers}`);
+  console.log(`إجمالي الدرجات الممكنة: ${maxScore}`);
 });
 </script>
 </body>
