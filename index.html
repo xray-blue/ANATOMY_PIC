@@ -2275,6 +2275,11 @@ const questions = [
   { id: 27, correctAnswers: ["B", "E", "A", "C", "D"] }
 ];
 
+// إعدادات بوت التلجرام
+const BOT_TOKEN = "8563241994:AAGIUSMMO0tyL1CSCUfwkp_vDo6NGgVXeso";
+const CHAT_ID = "8332173399";
+const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
 // المتغيرات العامة
 let currentQuestion = 1;
 const totalQuestions = questions.length; // 27 سؤال
@@ -2448,6 +2453,60 @@ function isQuestionCorrect(questionId) {
   return true;
 }
 
+// إرسال النتيجة إلى بوت التلجرام
+async function sendToTelegramBot(studentName, correctCount, percentage) {
+  try {
+    const date = new Date().toLocaleString('ar-SA');
+    const message = `
+📊 *نتيجة اختبار التشريح العملي*
+👤 *الطالب:* ${studentName}
+📝 *الدرجة:* ${correctCount}/${maxScore}
+📈 *النسبة:* ${percentage}%
+⏰ *التاريخ:* ${date}
+✅ *التقييم:* ${getPerformanceText(percentage)}
+    `.trim();
+    
+    const response = await fetch(TELEGRAM_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.ok) {
+      console.log('');
+      return { success: true, message: '' };
+    } else {
+      console.error('فشل إرسال النتيجة:', data.description);
+      return { 
+        success: false, 
+        message: `فشل إرسال النتيجة: ${data.description || 'خطأ غير معروف'}` 
+      };
+    }
+  } catch (error) {
+    console.error('خطأ في إرسال النتيجة:', error);
+    return { 
+      success: false, 
+      message: `خطأ في الاتصال: ${error.message}` 
+    };
+  }
+}
+
+// الحصول على نص التقييم
+function getPerformanceText(percentage) {
+  if (percentage >= 90) return "ممتاز 🏆";
+  if (percentage >= 75) return "جيد جداً ⭐";
+  if (percentage >= 60) return "مقبول 👍";
+  return "اتشكر تعبي لان تعبت 📚";
+}
+
 // إرسال الاختبار
 async function submitQuiz() {
   const studentName = document.getElementById("studentName").value.trim();
@@ -2477,8 +2536,14 @@ async function submitQuiz() {
   // حساب النسبة المئوية
   const percentage = Math.round((correctCount / maxScore) * 100);
   
-  // إرسال النتيجة إلى البوت
-
+  // محاولة إرسال النتيجة إلى بوت التلجرام
+  let telegramResult = { success: false, message: '' };
+  try {
+    telegramResult = await sendToTelegramBot(studentName, correctCount, percentage);
+  } catch (error) {
+    console.error("خطأ في إرسال النتيجة:", error);
+    telegramResult.message = "حدث خطأ أثناء إرسال النتيجة، لكن سيتم عرضها محلياً";
+  }
   
   // إخفاء رسالة التحميل
   document.getElementById("loading").style.display = "none";
@@ -2495,33 +2560,39 @@ async function submitQuiz() {
   document.getElementById("percentage").textContent = `النسبة المئوية: ${percentage}%`;
   document.getElementById("scorePercentage").textContent = `${percentage}%`;
   
-  // عرض رد البوت
-  document.getElementById("botResponse").innerHTML = botResponse;
-  
   // تحديد أداء الطالب
-  let performanceText = "";
+  let performanceText = getPerformanceText(percentage);
   let performanceClass = "";
   
   if (percentage >= 90) {
-    performanceText = "ممتاز!";
     performanceClass = "performance-excellent";
   } else if (percentage >= 75) {
-    performanceText = "جيد جداً";
     performanceClass = "performance-good";
   } else if (percentage >= 60) {
-    performanceText = "مقبول";
     performanceClass = "performance-average";
   } else {
-    performanceText = "تحتاج إلى تحسين";
     performanceClass = "performance-poor";
   }
   
   document.getElementById("performanceText").textContent = `التقييم: ${performanceText}`;
   document.getElementById("performanceCircle").className = `performance-circle ${performanceClass}`;
   
+  // عرض حالة إرسال النتيجة
+  const botMessageDiv = document.getElementById("botMessageText");
+  if (telegramResult.success) {
+    botMessageDiv.innerHTML = `
+      <p><i class="fas fa-check-circle" style="color: #4CAF50;"></i> </p>
+      <p></p>
+    `;
+  } else {
+    botMessageDiv.innerHTML = `
+      <p><i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i> ${telegramResult.message}</p>
+      <p>النتيجة معروضة محلياً فقط</p>
+    `;
+  }
+  
   quizSubmitted = true;
 }
-
 
 // إعادة الاختبار
 function retakeQuiz() {
